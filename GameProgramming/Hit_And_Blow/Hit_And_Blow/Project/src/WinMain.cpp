@@ -105,9 +105,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	count = 0;	// countを０で初期化	
 	cursor = 0;		// cursorを０で初期化
-	for (int num = 0; num < 9; num++)	// 配列 num を for文 で初期化
+	for (int i = 0; i < DIGITS; i++)	// 配列 num を for文 で初期化
 	{
-		num++;
+		num[i] = {i};
 	}
 	// ゲームのメインループ
 	// 画面を１回表示する毎にwhile分を１回処理する
@@ -130,7 +130,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			if(IsPushKey(MY_INPUT_UP))
 			{
 				num[cursor]++;	// num配列のcursor番目を 1 増やす
-				if (cursor > 9)// 増やした結果、9 より大きくなった場合は、0にする
+				if (num[cursor] > 9)// 増やした結果、9 より大きくなった場合は、0にする
 				{
 					num[cursor] = 0;
 				}
@@ -138,25 +138,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			else if(IsPushKey(MY_INPUT_DOWN))
 			{
 				num[cursor]--;	// num配列のcursor番目を 1 減らす
-				if (cursor < 0)// 減らした結果、0 より小さくなった場合は、9にする
+				if (num[cursor] < 0)// 減らした結果、0 より小さくなった場合は、9にする
 				{
-					cursor = 9;
+					num[cursor] = 9;
 				}
 			}
 			else if(IsPushKey(MY_INPUT_LEFT))
 			{
-				cursor--;	// cursorを 1 減らす
-				if (DIGITS < 0)// 減らした結果、0 より小さくなった場合は、0にする
+				cursor --;	// cursorを 1 減らす
+				if (cursor < 0)// 減らした結果、0 より小さくなった場合は、0にする
 				{
-					DIGITS + 1;
+					cursor = 0;
 				}
 			}
 			else if(IsPushKey(MY_INPUT_RIGHT))
 			{
-				cursor++;	// cursorを 1 増やす
-					if(DIGITS>3)		// 増やした結果、(DIGITS) より大きくなった場合は、(DIGITS - 1)にする
+				cursor ++;	// cursorを 1 増やす
+					if(cursor > DIGITS-1)		// 増やした結果、(DIGITS) より大きくなった場合は、(DIGITS - 1)にする
 					{
-						DIGITS - 1;
+						cursor = DIGITS-1;
 					}
 						
 			}
@@ -166,10 +166,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				if(IsValidNumber())
 				{
 					// チェックした結果が true の時、以下の処理を行う
-					
-
-
-					
+					//※※
+					//if()
 						// hit, blowの数をチェックし、その返り値を gameClear に代入
 						// 入力回数 count を 1増やす
 				}
@@ -184,7 +182,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		DrawCursor( cursor, IsValidNumber(), DIGITS );
 
 		// ゲームクリアしていれば、追加で描画
-		if( true )
+		if(gameClear==true)
 		{
 			DrawGameClear();
 		}
@@ -255,6 +253,7 @@ bool IsValidNumber()
 		{
 			return false;
 		}
+		
 	}
 	return true;
 }
@@ -278,7 +277,7 @@ bool IsValidDigit( int digit )
 		{
 			continue;
 		}
-		else if (digit == i)
+		else if (num[digit]==num[i])
 		{
 			return false;
 		}
