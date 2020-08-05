@@ -107,7 +107,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	cursor = 0;		// cursorを０で初期化
 	for (int num = 0; num < 9; num++)	// 配列 num を for文 で初期化
 	{
-		
+		num++;
 	}
 	// ゲームのメインループ
 	// 画面を１回表示する毎にwhile分を１回処理する
