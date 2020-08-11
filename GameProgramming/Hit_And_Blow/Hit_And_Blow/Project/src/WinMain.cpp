@@ -43,11 +43,7 @@
 // 定数定義
 // ==============================
 //※※　DIGITSという名前の定数or定義で値は４	// 問題の桁数
-enum 
-{
-	DIGITS = 4
-};
-
+const int DIGITS = 4;
 
 // ==============================
 // グローバル変数
@@ -107,7 +103,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	cursor = 0;		// cursorを０で初期化
 	for (int i = 0; i < DIGITS; i++)	// 配列 num を for文 で初期化
 	{
-		num[i] = {i};
+		num[i] = 0;
 	}
 	// ゲームのメインループ
 	// 画面を１回表示する毎にwhile分を１回処理する
@@ -166,8 +162,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				if(IsValidNumber())
 				{
 					// チェックした結果が true の時、以下の処理を行う
-					//※※
-					//if()
+					※※
+					if (IsValidNumber() == true)
+					{
+						if (IsMatch(&hit,&blow) == true)
+						{
+							gameClear = true;
+						}
+						count++;
+					}
 						// hit, blowの数をチェックし、その返り値を gameClear に代入
 						// 入力回数 count を 1増やす
 				}
@@ -249,11 +252,10 @@ bool IsValidNumber()
 	for( int i=0;i< DIGITS;i++ )
 	{
 		// i 番目の桁が無効だったら false を返す
-		if( i!=NULL )
+		if( IsValidDigit(i)==false)
 		{
 			return false;
 		}
-		
 	}
 	return true;
 }
@@ -271,13 +273,13 @@ bool IsValidDigit( int digit )
 
 	// 0 から DIGITS より小さい間繰り返す for文
 	// ループカウンタの変数名は i とする
-	for( int i=0;i<=DIGITS;i++ )
+	for( int i=0; i < DIGITS ; i++ )
 	{
 		if (digit == i)
 		{
 			continue;
 		}
-		else if (num[digit]==num[i])
+		if (num[digit]==num[i])
 		{
 			return false;
 		}
