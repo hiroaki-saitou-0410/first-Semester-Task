@@ -97,7 +97,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// ----------------------------------------------------
 	InputInit();			// 入力処理初期化関数の呼び出し
 	DrawInit();				// 描画処理初期化関数の呼び出し
-			// 問題となる数字の作成
+	CreateTargetNumber();	// 問題となる数字の作成
 
 	count = 0;	// countを０で初期化	
 	cursor = 0;		// cursorを０で初期化
@@ -162,10 +162,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				if(IsValidNumber())
 				{
 					// チェックした結果が true の時、以下の処理を行う
-					※※
+					//※※
 					if (IsValidNumber() == true)
 					{
-						if (IsMatch(&hit,&blow) == true)
+						IsMatch(&hit, &blow);
+						if (hit == DIGITS)
 						{
 							gameClear = true;
 						}
@@ -217,16 +218,19 @@ void CreateTargetNumber()
 	// ループカウンタの変数名は i とする
 	for( int i=0;i<DIGITS;i++ )
 	{
-		target[i];
+		target[i]=0;
 
-		bool isValid=true;
+		bool isValid;
 		do {
-			rand() % 10;	// 現在の要素へ、乱数値を代入
-			isValid = rand;
+			target[i] = rand() % 10;	// 現在の要素へ、乱数値を代入
 			isValid = true;
 			for (int j = 0; j < i; j++)
 			{
-				if (i==j)
+				if (i == j)
+				{
+					continue;
+				}
+				if (target[i]==target[j])
 				{
 					isValid=false;
 					break;
@@ -316,11 +320,11 @@ bool IsMatch(int* numHit, int* numBlow)
 				// 当てるべき数が num に入っていることが分かったので、Hit か Blow かを調べる
 				if (i==j)
 				{
-					*numHit += 1;
+					(*numHit) += 1;
 				}
 				else
 				{
-					*numBlow += 1;
+					(*numBlow) += 1;
 				}
 				// 配列の同じ位置にある場合は numHit のアドレスの中身を 1 増やす
 				// そうでない場合は numBlow のアドレスの中身を 1 増やす
