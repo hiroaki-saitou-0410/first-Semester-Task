@@ -43,11 +43,7 @@
 // 定数定義
 // ==============================
 //※※　DIGITSという名前の定数or定義で値は４	// 問題の桁数
-enum 
-{
-	DIGITS = 4
-};
-
+const int DIGITS = 4;
 
 // ==============================
 // グローバル変数
@@ -101,13 +97,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// ----------------------------------------------------
 	InputInit();			// 入力処理初期化関数の呼び出し
 	DrawInit();				// 描画処理初期化関数の呼び出し
-			// 問題となる数字の作成
+	CreateTargetNumber();	// 問題となる数字の作成
 
 	count = 0;	// countを０で初期化	
 	cursor = 0;		// cursorを０で初期化
-	for (int num = 0; num < 9; num++)	// 配列 num を for文 で初期化
+	for (int i = 0; i < DIGITS; i++)	// 配列 num を for文 で初期化
 	{
-		num++;
+		num[i] = 0;
 	}
 	// ゲームのメインループ
 	// 画面を１回表示する毎にwhile分を１回処理する
@@ -130,7 +126,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			if(IsPushKey(MY_INPUT_UP))
 			{
 				num[cursor]++;	// num配列のcursor番目を 1 増やす
-				if (cursor > 9)// 増やした結果、9 より大きくなった場合は、0にする
+				if (num[cursor] > 9)// 増やした結果、9 より大きくなった場合は、0にする
 				{
 					num[cursor] = 0;
 				}
@@ -138,25 +134,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			else if(IsPushKey(MY_INPUT_DOWN))
 			{
 				num[cursor]--;	// num配列のcursor番目を 1 減らす
-				if (cursor < 0)// 減らした結果、0 より小さくなった場合は、9にする
+				if (num[cursor] < 0)// 減らした結果、0 より小さくなった場合は、9にする
 				{
-					cursor = 9;
+					num[cursor] = 9;
 				}
 			}
 			else if(IsPushKey(MY_INPUT_LEFT))
 			{
-				cursor--;	// cursorを 1 減らす
-				if (DIGITS < 0)// 減らした結果、0 より小さくなった場合は、0にする
+				cursor --;	// cursorを 1 減らす
+				if (cursor < 0)// 減らした結果、0 より小さくなった場合は、0にする
 				{
-					DIGITS + 1;
+					cursor = 0;
 				}
 			}
 			else if(IsPushKey(MY_INPUT_RIGHT))
 			{
-				cursor++;	// cursorを 1 増やす
-					if(DIGITS>3)		// 増やした結果、(DIGITS) より大きくなった場合は、(DIGITS - 1)にする
+				cursor ++;	// cursorを 1 増やす
+					if(cursor > DIGITS-1)		// 増やした結果、(DIGITS) より大きくなった場合は、(DIGITS - 1)にする
 					{
-						DIGITS - 1;
+						cursor = DIGITS-1;
 					}
 						
 			}
@@ -166,10 +162,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				if(IsValidNumber())
 				{
 					// チェックした結果が true の時、以下の処理を行う
-					
-
-
-					
+					//※※
+					if (IsValidNumber() == true)
+					{
+						IsMatch(&hit, &blow);
+						if (hit == DIGITS)
+						{
+							gameClear = true;
+						}
+						count++;
+					}
 						// hit, blowの数をチェックし、その返り値を gameClear に代入
 						// 入力回数 count を 1増やす
 				}
@@ -184,7 +186,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		DrawCursor( cursor, IsValidNumber(), DIGITS );
 
 		// ゲームクリアしていれば、追加で描画
-		if( true )
+		if(gameClear==true)
 		{
 			DrawGameClear();
 		}
@@ -216,16 +218,19 @@ void CreateTargetNumber()
 	// ループカウンタの変数名は i とする
 	for( int i=0;i<DIGITS;i++ )
 	{
-		target[i];
+		target[i]=0;
 
-		bool isValid=true;
+		bool isValid;
 		do {
-			rand() % 10;	// 現在の要素へ、乱数値を代入
-			isValid = rand;
+			target[i] = rand() % 10;	// 現在の要素へ、乱数値を代入
 			isValid = true;
 			for (int j = 0; j < i; j++)
 			{
-				if (i==j)
+				if (i == j)
+				{
+					continue;
+				}
+				if (target[i]==target[j])
 				{
 					isValid=false;
 					break;
@@ -251,7 +256,7 @@ bool IsValidNumber()
 	for( int i=0;i< DIGITS;i++ )
 	{
 		// i 番目の桁が無効だったら false を返す
-		if( i!=NULL )
+		if( IsValidDigit(i)==false)
 		{
 			return false;
 		}
@@ -272,13 +277,13 @@ bool IsValidDigit( int digit )
 
 	// 0 から DIGITS より小さい間繰り返す for文
 	// ループカウンタの変数名は i とする
-	for( int i=0;i<=DIGITS;i++ )
+	for( int i=0; i < DIGITS ; i++ )
 	{
 		if (digit == i)
 		{
 			continue;
 		}
-		else if (digit == i)
+		if (num[digit]==num[i])
 		{
 			return false;
 		}
@@ -315,11 +320,11 @@ bool IsMatch(int* numHit, int* numBlow)
 				// 当てるべき数が num に入っていることが分かったので、Hit か Blow かを調べる
 				if (i==j)
 				{
-					*numHit += 1;
+					(*numHit) += 1;
 				}
 				else
 				{
-					*numBlow += 1;
+					(*numBlow) += 1;
 				}
 				// 配列の同じ位置にある場合は numHit のアドレスの中身を 1 増やす
 				// そうでない場合は numBlow のアドレスの中身を 1 増やす
